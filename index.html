@@ -3,21 +3,171 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Geoportal - Turismo Rural</title>
-    
+    <title>Visor Geográfico de Turismo Rural</title>
+
     <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Estilos Personalizados -->
-    <link rel="stylesheet" href="css/styles.css">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+            background-color: #f8fafc;
+            color: #1e293b;
+        }
+
+        .navbar {
+            background-color: #0f172a;
+            color: #ffffff;
+            padding: 0.8rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+
+        .navbar h1 {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .control-group label {
+            font-size: 0.875rem;
+            margin-right: 0.5rem;
+        }
+
+        .control-group select {
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            border: 1px solid #475569;
+            background-color: #1e293b;
+            color: #ffffff;
+            font-size: 0.875rem;
+            cursor: pointer;
+        }
+
+        .main-container {
+            display: flex;
+            flex: 1;
+            height: calc(100vh - 56px);
+        }
+
+        .sidebar {
+            width: 360px;
+            background-color: #f1f5f9;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            overflow-y: auto;
+            border-right: 1px solid #e2e8f0;
+        }
+
+        .card {
+            background: #ffffff;
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            border: 1px solid #e2e8f0;
+        }
+
+        .card h2 {
+            font-size: 1.15rem;
+            color: #0f172a;
+            margin-bottom: 0.25rem;
+        }
+
+        .card h3 {
+            font-size: 0.95rem;
+            margin-bottom: 0.5rem;
+            color: #334155;
+        }
+
+        .card p {
+            font-size: 0.85rem;
+            color: #64748b;
+            line-height: 1.4;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+        }
+
+        .metric-card {
+            background: #ffffff;
+            padding: 0.75rem;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid #e2e8f0;
+        }
+
+        .metric-value {
+            display: block;
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #2563eb;
+        }
+
+        .metric-label {
+            font-size: 0.725rem;
+            color: #64748b;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 0.5rem;
+            font-size: 0.8rem;
+        }
+
+        .data-table th, .data-table td {
+            padding: 0.4rem;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .data-table th {
+            background-color: #f8fafc;
+            color: #475569;
+        }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            height: 160px;
+        }
+
+        #map-container {
+            flex: 1;
+            position: relative;
+        }
+
+        #map {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
 </head>
 <body>
 
     <header class="navbar">
         <h1>Visor Geográfico de Turismo Rural</h1>
         <div class="control-group">
-            <label for="region-select">Seleccionar Nodo de Estudio:</label>
+            <label for="region-select">Nodo de Estudio:</label>
             <select id="region-select">
                 <option value="quindio">Quindío (PCC)</option>
                 <option value="cali">Cali (Zona Rural)</option>
@@ -26,14 +176,12 @@
     </header>
 
     <main class="main-container">
-        <!-- Sidebar Izquierdo -->
         <aside class="sidebar">
-            <div id="info-header" class="card">
+            <div class="card">
                 <h2 id="region-title">Cargando...</h2>
                 <p id="region-subtitle">...</p>
             </div>
 
-            <!-- Tarjetas de Métricas Rápidas -->
             <div class="metrics-grid">
                 <div class="metric-card">
                     <span class="metric-value" id="metric-pib">--</span>
@@ -45,12 +193,10 @@
                 </div>
             </div>
 
-            <!-- Contenedor Dinámico para Tablas e Información -->
             <div id="info-content" class="card">
-                <!-- Se llena dinámicamente desde data.js -->
+                <!-- Tablas e Información dinámicas -->
             </div>
 
-            <!-- Contenedor para Gráficos Futuros -->
             <div class="card">
                 <h3>Indicadores de Cobertura</h3>
                 <div class="chart-container">
@@ -59,7 +205,6 @@
             </div>
         </aside>
 
-        <!-- Visor del Mapa -->
         <section id="map-container">
             <div id="map"></div>
         </section>
@@ -67,9 +212,196 @@
 
     <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <!-- Scripts de la Aplicación -->
-    <script src="js/data.js"></script>
-    <script src="js/charts.js"></script>
-    <script src="js/map.js"></script>
+
+    <script>
+        // --- 1. DATOS DE LAS REGIONES ---
+        const REGIONAL_DATA = {
+            quindio: {
+                nombre: "Quindío",
+                subtitulo: "Paisaje Cultural Cafetero",
+                coordenadas: [4.53389, -75.68111],
+                zoom: 10,
+                geojsonPath: './data/quindio_municipios.geojson',
+                estilo: { color: "#15803d", fillColor: "#86efac", fillOpacity: 0.4, weight: 2 },
+                metricas: {
+                    pib: "15 - 20%",
+                    pibEtiqueta: "Aporte Turismo al PIB Depto",
+                    area: "27.476 ha",
+                    areaEtiqueta: "Área Principal PCC"
+                },
+                tablas: [
+                    {
+                        titulo: "Uso Cobertura del Suelo",
+                        columnas: ["Categoría", "Porcentaje"],
+                        filas: [
+                            ["Café y Plátano", "42%"],
+                            ["Bosque Nativo / Guadua", "31%"],
+                            ["Pastos / Ganadería", "18%"],
+                            ["Urbano e Infraestructura", "9%"]
+                        ]
+                    }
+                ],
+                chartData: {
+                    labels: ['Café', 'Bosque', 'Pastos', 'Urbano'],
+                    datasets: [{
+                        data: [42, 31, 18, 9],
+                        backgroundColor: ['#15803d', '#22c55e', '#eab308', '#64748b']
+                    }]
+                }
+            },
+            cali: {
+                nombre: "Cali Rural",
+                subtitulo: "15 Corregimientos en Piedemonte",
+                coordenadas: [3.42, -76.53],
+                zoom: 11,
+                geojsonPath: './data/cali_corregimientos.geojson',
+                estilo: { color: "#0369a1", fillColor: "#38bdf8", fillOpacity: 0.4, weight: 2 },
+                metricas: {
+                    pib: "8 - 10%",
+                    pibEtiqueta: "Aporte Turismo PIB Valle",
+                    area: "70%",
+                    areaEtiqueta: "Territorio Rural Municipal"
+                },
+                tablas: [
+                    {
+                        titulo: "Vocación de Suelo Rural",
+                        columnas: ["Zonificación", "Proporción"],
+                        filas: [
+                            ["Protección Ambiental", "55%"],
+                            ["Agroforestal / Sostenible", "25%"],
+                            ["Suburbanizado / Turístico", "20%"]
+                        ]
+                    }
+                ],
+                chartData: {
+                    labels: ['Protección', 'Agroforestal', 'Suburbano'],
+                    datasets: [{
+                        data: [55, 25, 20],
+                        backgroundColor: ['#0369a1', '#0ea5e9', '#f59e0b']
+                    }]
+                }
+            }
+        };
+
+        // --- 2. LÓGICA DE GRÁFICOS ---
+        let currentChart = null;
+
+        function renderChart(chartData) {
+            const ctx = document.getElementById('regionChart').getContext('2d');
+            if (currentChart) currentChart.destroy();
+
+            currentChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: chartData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 10 } } }
+                    }
+                }
+            });
+        }
+
+        // --- 3. LÓGICA PRINCIPAL Y MAPA ---
+        document.addEventListener("DOMContentLoaded", function () {
+            const map = L.map('map').setView(REGIONAL_DATA.quindio.coordenadas, REGIONAL_DATA.quindio.zoom);
+
+            const basemapOsm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; OpenStreetMap'
+            }).addTo(map);
+
+            const basemapSat = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+                attribution: 'Tiles &copy; Esri'
+            });
+
+            const geojsonLayerGroup = L.layerGroup().addTo(map);
+
+            L.control.layers({
+                "Mapa Político": basemapOsm,
+                "Vista Satelital": basemapSat
+            }, null, { position: 'topright' }).addTo(map);
+
+            function loadRegion(regionKey) {
+                const config = REGIONAL_DATA[regionKey];
+                if (!config) return;
+
+                geojsonLayerGroup.clearLayers();
+
+                fetch(config.geojsonPath)
+                    .then(res => res.json())
+                    .then(data => {
+                        const geojsonLayer = L.geoJSON(data, {
+                            style: config.estilo,
+                            onEachFeature: function (feature, layer) {
+                                const nombre = feature.properties.MPIO_CNMBR 
+                                            || feature.properties.CORREGIMIENTO 
+                                            || feature.properties.NOMBRE 
+                                            || feature.properties.nombre 
+                                            || "Unidad Territorial";
+
+                                layer.bindTooltip(`<strong>${nombre}</strong>`, { sticky: true });
+
+                                layer.on({
+                                    mouseover: (e) => {
+                                        e.target.setStyle({ weight: 4, fillOpacity: 0.7 });
+                                        e.target.bringToFront();
+                                    },
+                                    mouseout: (e) => {
+                                        geojsonLayer.resetStyle(e.target);
+                                    },
+                                    click: (e) => {
+                                        map.fitBounds(e.target.getBounds());
+                                    }
+                                });
+                            }
+                        });
+
+                        geojsonLayerGroup.addLayer(geojsonLayer);
+                    })
+                    .catch(err => console.warn("GeoJSON no encontrado aún en la ruta dada. Cargando interfaz base..."));
+
+                map.flyTo(config.coordenadas, config.zoom);
+                updateUI(config);
+            }
+
+            function updateUI(config) {
+                document.getElementById('region-title').innerText = config.nombre;
+                document.getElementById('region-subtitle').innerText = config.subtitulo;
+
+                document.getElementById('metric-pib').innerText = config.metricas.pib;
+                document.getElementById('label-pib').innerText = config.metricas.pibEtiqueta;
+
+                document.getElementById('metric-area').innerText = config.metricas.area;
+                document.getElementById('label-area').innerText = config.metricas.areaEtiqueta;
+
+                const infoContainer = document.getElementById('info-content');
+                let htmlContent = "";
+
+                if (config.tablas && config.tablas.length > 0) {
+                    config.tablas.forEach(tabla => {
+                        htmlContent += `<h3>${tabla.titulo}</h3><table class="data-table"><thead><tr>`;
+                        tabla.columnas.forEach(col => htmlContent += `<th>${col}</th>`);
+                        htmlContent += `</tr></thead><tbody>`;
+                        tabla.filas.forEach(fila => {
+                            htmlContent += `<tr><td>${fila[0]}</td><td><strong>${fila[1]}</strong></td></tr>`;
+                        });
+                        htmlContent += `</tbody></table>`;
+                    });
+                }
+                infoContainer.innerHTML = htmlContent;
+
+                if (config.chartData) {
+                    renderChart(config.chartData);
+                }
+            }
+
+            const selectRegion = document.getElementById('region-select');
+            selectRegion.addEventListener('change', (e) => loadRegion(e.target.value));
+
+            // Carga inicial
+            loadRegion('quindio');
+        });
+    </script>
 </body>
 </html>
