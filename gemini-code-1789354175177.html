@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Geoportal - Turismo Rural</title>
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Estilos Personalizados -->
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+    <header class="navbar">
+        <h1>Visor Geográfico de Turismo Rural</h1>
+        <div class="control-group">
+            <label for="region-select">Seleccionar Nodo de Estudio:</label>
+            <select id="region-select">
+                <option value="quindio">Quindío (PCC)</option>
+                <option value="cali">Cali (Zona Rural)</option>
+            </select>
+        </div>
+    </header>
+
+    <main class="main-container">
+        <!-- Sidebar Izquierdo -->
+        <aside class="sidebar">
+            <div id="info-header" class="card">
+                <h2 id="region-title">Cargando...</h2>
+                <p id="region-subtitle">...</p>
+            </div>
+
+            <!-- Tarjetas de Métricas Rápidas -->
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <span class="metric-value" id="metric-pib">--</span>
+                    <span class="metric-label" id="label-pib">Aporte al PIB</span>
+                </div>
+                <div class="metric-card">
+                    <span class="metric-value" id="metric-area">--</span>
+                    <span class="metric-label" id="label-area">Área Cobertura</span>
+                </div>
+            </div>
+
+            <!-- Contenedor Dinámico para Tablas e Información -->
+            <div id="info-content" class="card">
+                <!-- Se llena dinámicamente desde data.js -->
+            </div>
+
+            <!-- Contenedor para Gráficos Futuros -->
+            <div class="card">
+                <h3>Indicadores de Cobertura</h3>
+                <div class="chart-container">
+                    <canvas id="regionChart"></canvas>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Visor del Mapa -->
+        <section id="map-container">
+            <div id="map"></div>
+        </section>
+    </main>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <!-- Scripts de la Aplicación -->
+    <script src="js/data.js"></script>
+    <script src="js/charts.js"></script>
+    <script src="js/map.js"></script>
+</body>
+</html>
