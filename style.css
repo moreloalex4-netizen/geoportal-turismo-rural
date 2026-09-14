@@ -1,0 +1,242 @@
+:root {
+  --bg: #f6f0e6;
+  --panel: #fffaf2;
+  --ink: #2c231a;
+  --ink-dim: #6b5d4d;
+  --terracota: #b5502f;
+  --terracota-soft: #f0d9cd;
+  --verde: #4c6b4f;
+  --verde-soft: #dde6dc;
+  --line: #ded0ba;
+  --font-display: "Georgia", "Iowan Old Style", serif;
+  --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  line-height: 1.6;
+}
+
+.topbar {
+  padding: 2.2rem 1.5rem 1.5rem;
+  border-bottom: 3px solid var(--terracota);
+  max-width: 950px;
+  margin: 0 auto;
+}
+
+.topbar h1 {
+  font-family: var(--font-display);
+  font-size: 1.9rem;
+  margin: 0 0 0.3rem;
+}
+
+.subtitle {
+  color: var(--ink-dim);
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+.region-tabs {
+  display: flex;
+  gap: 0.5rem;
+  padding: 1rem 1.5rem 0;
+  max-width: 950px;
+  margin: 0 auto;
+}
+
+.region-btn {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-bottom: none;
+  color: var(--ink-dim);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  padding: 0.7rem 1.2rem;
+  cursor: pointer;
+}
+
+.region-btn.active {
+  color: var(--terracota);
+  font-weight: 600;
+}
+
+main {
+  max-width: 950px;
+  margin: 0 auto;
+  padding: 0 1.5rem 3rem;
+  border-top: 1px solid var(--line);
+}
+
+.region-panel { display: none; padding-top: 1.5rem; }
+.region-panel.active { display: block; }
+
+.topic-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 1.5rem;
+}
+
+.topic-btn {
+  background: none;
+  border: 1px solid var(--line);
+  color: var(--ink-dim);
+  font-size: 0.85rem;
+  padding: 0.5rem 0.9rem;
+  cursor: pointer;
+  border-radius: 999px;
+}
+
+.topic-btn.active {
+  background: var(--verde);
+  border-color: var(--verde);
+  color: #fff;
+}
+
+.topic-content h2 {
+  font-family: var(--font-display);
+  color: var(--terracota);
+  font-size: 1.5rem;
+  margin: 0 0 1.2rem;
+}
+
+/* ---- Bloques ---- */
+.block { margin-bottom: 1.6rem; }
+
+.block-text p {
+  font-size: 0.98rem;
+  margin: 0 0 0.6rem;
+}
+.block-text p:last-child { margin-bottom: 0; }
+
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 0.8rem;
+}
+
+.stat-card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-top: 3px solid var(--terracota);
+  padding: 1rem;
+  text-align: center;
+}
+
+.stat-value {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  color: var(--terracota);
+  display: block;
+}
+
+.stat-label {
+  font-size: 0.8rem;
+  color: var(--ink-dim);
+}
+
+.list-block {
+  background: var(--verde-soft);
+  border: 1px solid var(--line);
+  padding: 1rem 1.2rem;
+  list-style: none;
+  margin: 0;
+}
+
+.list-block li {
+  padding: 0.4rem 0;
+  font-size: 0.95rem;
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+.list-block li:last-child { border-bottom: none; }
+
+.list-block li::before {
+  content: "→ ";
+  color: var(--verde);
+  font-weight: bold;
+}
+
+.image-block {
+  border: 1px solid var(--line);
+  background: #000;
+}
+
+.image-block img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.image-caption {
+  background: var(--panel);
+  color: var(--ink-dim);
+  font-size: 0.82rem;
+  padding: 0.5rem 0.8rem;
+  border-top: 1px solid var(--line);
+}
+
+.table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+}
+
+table.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+table.data-table th {
+  background: var(--terracota-soft);
+  text-align: left;
+  padding: 0.6rem 0.8rem;
+  font-family: var(--font-display);
+}
+
+table.data-table td {
+  padding: 0.6rem 0.8rem;
+  border-top: 1px solid var(--line);
+  background: var(--panel);
+}
+
+.chart-block {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  padding: 1rem;
+}
+
+.chart-title {
+  font-size: 0.85rem;
+  color: var(--ink-dim);
+  margin-bottom: 0.6rem;
+}
+
+.map-block { margin-top: 2rem; }
+
+.map-block h2 {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  color: var(--verde);
+}
+
+.site-map {
+  height: 380px;
+  border: 1px solid var(--line);
+}
+
+footer {
+  text-align: center;
+  color: var(--ink-dim);
+  font-size: 0.8rem;
+  padding: 1.5rem;
+  border-top: 1px solid var(--line);
+}
+
+@media (max-width: 600px) {
+  .topbar h1 { font-size: 1.5rem; }
+}
